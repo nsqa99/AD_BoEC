@@ -3,14 +3,23 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.ItemDTO;
+import com.example.demo.dto.ItemDto;
+import com.example.demo.dto.SearchDto;
 
+@Service
 public interface ItemService {
-	List<ItemDTO> findAll(Pageable pageable);
-	ItemDTO save(ItemDTO item) throws Exception;
-	ItemDTO update(ItemDTO item, long id) throws Exception;
-	ItemDTO findById(long id);
-	void delete(long id) throws Exception;
-	int getTotalRecords();
+	
+	public List<ItemDto> findAll(Pageable pageable);
+
+	public Page<ItemDto> searchByPage(SearchDto dto);
+
+	public ItemDto getProductById(Long id);
+
+	public ItemDto saveOrUpdate(ItemDto dto);
+
+	public Boolean delete(Long id);
+
 }
