@@ -28,7 +28,7 @@ public class UserDto extends AbstractDTO<UserDto> {
 		this.district = user.getAddress().getDistrict();
 		this.ward = user.getAddress().getWard();
 	}
-
+	
 	public String getUsername() {
 		return username;
 	}
