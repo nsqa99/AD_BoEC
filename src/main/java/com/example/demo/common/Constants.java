@@ -8,13 +8,30 @@ public class Constants {
 		Electric(3), // do dien tu
 		;
 
-		private Integer value;
+		private int value;
 
-		private ProductType(Integer value) {
+		private ProductType(int value) {
 			this.value = value;
 		}
 
-		public Integer getValue() {
+		public int getValue() {
+			return value;
+		}
+	}
+	
+	public static enum StatusCode {
+		OK(200),
+		BAD_REQUEST(400),
+		INTERNAL_ERROR(500),
+		CREATE_ERROR(409)
+		;
+		private int value;
+
+		private StatusCode(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
 			return value;
 		}
 	}
