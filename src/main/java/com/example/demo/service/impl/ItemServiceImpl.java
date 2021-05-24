@@ -319,8 +319,8 @@ public class ItemServiceImpl implements ItemService {
 		Item item = new Item();
 		Book book = new Book();
 		Publisher pub = new Publisher(dto.getPublisher());
-		SubCategory subcategory = new SubCategory();
-		Category category = new Category();
+		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
+		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
 		
 		List<String> imageUrls = dto.getImages();
 		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
@@ -335,9 +335,6 @@ public class ItemServiceImpl implements ItemService {
 			
 		}
 		
-		category.setCode(dto.getCategoryCode());
-		subcategory.setCode(dto.getSubcategoryCode());
-		subcategory.setCategory(category);
 		item.setName(dto.getName());
 		item.setPrice(dto.getPrice());
 		item.setType(dto.getType());
@@ -364,8 +361,8 @@ public class ItemServiceImpl implements ItemService {
 		
 		Book book = new Book();
 		Publisher pub = new Publisher(dto.getPublisher());
-		SubCategory subcategory = new SubCategory();
-		Category category = new Category();
+		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
+		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
 		
 		List<String> imageUrls = dto.getImages();
 		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
@@ -380,9 +377,6 @@ public class ItemServiceImpl implements ItemService {
 			
 		}
 		
-		category.setCode(dto.getCategoryCode());
-		subcategory.setCode(dto.getSubcategoryCode());
-		subcategory.setCategory(category);
 		item.setName(dto.getName());
 		item.setPrice(dto.getPrice());
 		item.setType(dto.getType());

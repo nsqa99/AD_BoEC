@@ -48,11 +48,11 @@ public class Item extends BaseEntity {
 //	@JoinColumn(name = "brand_id")
 //	private Brand brand;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "subcategory_id") // 1, 2, 3
 	private SubCategory subcategory;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id") // 1, 2, 3
 	private Category category;
 
