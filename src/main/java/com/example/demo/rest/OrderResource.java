@@ -33,12 +33,19 @@ public class OrderResource {
 	@PostMapping("")
 	@PreAuthorize("hasRole('ROLE_USER')")
 	public ResponseEntity<JsonMessage<OrderDto>> create(@RequestBody OrderDto dto) {
-		OrderDto result = service.insert(dto);
-		if (result == null)
+		OrderDto result;
+		try {
+			result = service.insert(dto);
+			if (result != null)
+				return new ResponseEntity<JsonMessage<OrderDto>>(
+						new JsonMessage<OrderDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
+		} catch (Exception e) {
 			return new ResponseEntity<JsonMessage<OrderDto>>(
-					new JsonMessage<OrderDto>(Constants.StatusCode.CREATE_ERROR.getValue(), result), HttpStatus.OK);
+					new JsonMessage<OrderDto>(Constants.StatusCode.BAD_REQUEST.getValue(), null), HttpStatus.OK);
+		}
+
 		return new ResponseEntity<JsonMessage<OrderDto>>(
-				new JsonMessage<OrderDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
+				new JsonMessage<OrderDto>(Constants.StatusCode.CREATE_ERROR.getValue()), HttpStatus.OK);
 	}
 
 	@GetMapping("")
@@ -51,7 +58,7 @@ public class OrderResource {
 		return new ResponseEntity<JsonMessage<List<OrderDto>>>(
 				new JsonMessage<List<OrderDto>>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<JsonMessage<OrderDto>> getOrderById(@PathVariable Long id) {
 		OrderDto result = service.findById(id);

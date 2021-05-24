@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.convert.Converter;
 import com.example.demo.dto.CartDto;
+import com.example.demo.dto.ItemCartDto;
 import com.example.demo.dto.OrderDto;
 import com.example.demo.dto.PaymentDto;
 import com.example.demo.dto.ShipmentDto;
@@ -70,16 +72,25 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
-	public OrderDto insert(OrderDto orderDto) {
+	public OrderDto insert(OrderDto orderDto) throws Exception {
 		UserDto uDto = orderDto.getUser();
 
 		CartDto cartDto = orderDto.getCart();
 		PaymentDto payDto = orderDto.getPayment();
 		ShipmentDto shipDto = payDto.getShipment();
 		User user = userRepo.findById(uDto.getId()).orElse(null);
+		List<Item> updatedItem = new ArrayList<Item>();
 		if (user == null)
 			return null;
 		Cart cart = new Cart();
+		for (ItemCartDto dto : cartDto.getItems()) {
+			Item item = itemRepo.findById(dto.getItem().getId()).orElse(null);
+			if (item != null) {
+				if (dto.getAmount() > item.getInStock()) throw new Exception("Số lượng sản phẩm vượt quá lượng hàng tồn kho!");
+				item.setInStock(item.getInStock() - dto.getAmount());
+				updatedItem.add(item);
+			} else throw new Exception("Không tìm thấy sản phẩm");
+		}
 		cart.setItems(cartDto.getItems().stream().map(dto -> {
 			ItemCart itemCart = new ItemCart();
 			itemCart.setAmount(dto.getAmount());
@@ -88,7 +99,6 @@ public class OrderServiceImpl implements OrderService {
 			return itemCart;
 		}).collect(Collectors.toList()));
 		cart.setUser(user);
-
 		Payment pay = new Payment();
 		pay.setMethod(payDto.getMethod());
 		pay.setTotal(payDto.getTotal());
@@ -110,8 +120,12 @@ public class OrderServiceImpl implements OrderService {
 		cart.getItems().stream().forEach(i -> {
 			i.setCart(cart);
 		});
+		
 		pay.setOrder(order);
 		Order newOrder = ordRepo.save(order);
+		updatedItem.stream().forEach(i -> {
+			itemRepo.save(i);
+		});
 		if (newOrder != null)
 			return new OrderDto(newOrder);
 		return null;
