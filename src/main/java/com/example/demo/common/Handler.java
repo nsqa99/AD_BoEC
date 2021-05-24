@@ -17,6 +17,9 @@ public class Handler {
 		if (ex instanceof NullPointerException) {
 			return new ResponseEntity<JsonMessage<String>>(
 					new JsonMessage<String>(Constants.StatusCode.BAD_REQUEST.getValue()), HttpStatus.OK);
+		} else if (ex instanceof org.springframework.security.access.AccessDeniedException) {
+			return new ResponseEntity<JsonMessage<String>>(
+					new JsonMessage<String>(Constants.StatusCode.FORBIDDEN.getValue()), HttpStatus.OK);
 		}
 		return new ResponseEntity<JsonMessage<String>>(
 				new JsonMessage<String>(Constants.StatusCode.INTERNAL_ERROR.getValue()), HttpStatus.OK);
