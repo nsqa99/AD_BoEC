@@ -26,9 +26,9 @@ public class Comment extends BaseEntity {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToOne
-	@JoinColumn(name = "product_id")
-	private Item product;
+//	@ManyToOne
+//	@JoinColumn(name = "product_id")
+//	private Item product;
 
 	public String getCreatedDate() {
 		return createdDate;
@@ -70,12 +70,12 @@ public class Comment extends BaseEntity {
 		this.user = user;
 	}
 
-	public Item getProduct() {
-		return product;
-	}
-
-	public void setProduct(Item product) {
-		this.product = product;
-	}
+//	public Item getProduct() {
+//		return product;
+//	}
+//
+//	public void setProduct(Item product) {
+//		this.product = product;
+//	}
 
 }
