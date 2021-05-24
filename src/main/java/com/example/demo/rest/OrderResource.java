@@ -42,6 +42,7 @@ public class OrderResource {
 	}
 
 	@GetMapping("")
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<JsonMessage<List<OrderDto>>> findAll(
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
