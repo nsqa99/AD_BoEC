@@ -59,10 +59,13 @@ public class ItemDto extends AbstractDTO<ItemDto> {
 		this.subcategoryCode = entity.getSubcategory().getCode();
 		this.inStock = entity.getInStock();
 		images = new ArrayList<>();
-		for (Image image : entity.getImages()) {
-			ImageDto dto = new ImageDto(image);
-			images.add(dto.getUrl());
+		if (entity.getImages() != null) {
+			for (Image image : entity.getImages()) {
+				ImageDto dto = new ImageDto(image);
+				images.add(dto.getUrl());
+			}
 		}
+		
 
 		if (this.categoryCode.equalsIgnoreCase("sach")) {
 			this.publishingYear = entity.getBook().getYear();

@@ -79,7 +79,7 @@ public class ItemResources {
 
 	@PostMapping("")
 	public ResponseEntity<JsonMessage<ItemDto>> create(@RequestBody ItemDto dto) {
-		ItemDto result = service.saveOrUpdate(dto);
+		ItemDto result = service.insert(dto);
 		return new ResponseEntity<JsonMessage<ItemDto>>(
 				new JsonMessage<ItemDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
 	}

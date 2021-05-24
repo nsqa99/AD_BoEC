@@ -48,29 +48,30 @@ public class Item extends BaseEntity {
 //	@JoinColumn(name = "brand_id")
 //	private Brand brand;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "subcategory_id") // 1, 2, 3
 	private SubCategory subcategory;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "category_id") // 1, 2, 3
 	private Category category;
 
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private ProductStock stock = new ProductStock();
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 	private List<Image> images; // 1, 2, 3
 
-	@OneToMany(mappedBy = "product")
-	private List<Comment> comments;
+//	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+//	private List<Comment> comments;
 
 
 
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private Clothes clothes;
 
-	@OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "book_id")
 	private Book book;
 
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -210,13 +211,13 @@ public class Item extends BaseEntity {
 //		this.publisher = publisher;
 //	}
 
-	public List<Comment> getComments() {
-		return comments;
-	}
-
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
-	}
+//	public List<Comment> getComments() {
+//		return comments;
+//	}
+//
+//	public void setComments(List<Comment> comments) {
+//		this.comments = comments;
+//	}
 
 
 

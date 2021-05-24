@@ -19,6 +19,10 @@ public interface ItemService {
 	public ItemDto getProductById(Long id);
 
 	public ItemDto saveOrUpdate(ItemDto dto);
+	
+	public ItemDto insert(ItemDto dto);
+	
+	public ItemDto update(ItemDto dto);
 
 	public Boolean delete(Long id);
 
