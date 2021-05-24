@@ -12,4 +12,8 @@ import com.example.demo.dto.UserDto;
 public interface UserService {
 	public UserDto getCurrentUser(Long id);
 	public List<OrderDto> getOrdersByUserId(long id, Pageable pageable);
+	public UserDto updateOne(UserDto dto);
+	public List<UserDto> findAll(Pageable pageable);
+	public UserDto findById(long id);
+	public long getTotal();
 }
