@@ -23,7 +23,8 @@ public class Constants {
 		OK(200),
 		BAD_REQUEST(400),
 		INTERNAL_ERROR(500),
-		CREATE_ERROR(409)
+		CREATE_ERROR(409),
+		FORBIDDEN(403)
 		;
 		private int value;
 
