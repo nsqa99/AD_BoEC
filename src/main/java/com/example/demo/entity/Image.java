@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +15,9 @@ public class Image extends BaseEntity {
 	@Column(name = "url")
 	private String url;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id")
-	private Item product;
+	@ManyToOne
+	@JoinColumn(name = "item_id", nullable = false)
+	private Item item;
 
 	public Image() {
 		super();
@@ -35,12 +36,14 @@ public class Image extends BaseEntity {
 		this.url = url;
 	}
 
-	public Item getProduct() {
-		return product;
+	public Item getItem() {
+		return item;
 	}
 
-	public void setProduct(Item product) {
-		this.product = product;
+	public void setItem(Item item) {
+		this.item = item;
 	}
+
+	
 
 }

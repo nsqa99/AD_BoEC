@@ -9,5 +9,5 @@ import com.example.demo.entity.Image;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-	public List<Image> findAllByProductId(Long id);
+	public List<Image> findAllByItemId(Long id);
 }
