@@ -20,7 +20,7 @@ public class CommentDto extends AbstractDTO<CommentDto> {
 		this.rating = entity.getRating();
 		this.displayName = entity.getDisplayName();
 		this.username = entity.getUser().getUsername();
-		this.productId = entity.getProduct().getId();
+//		this.productId = entity.getProduct().getId();
 	}
 
 	public String getDisplayName() {

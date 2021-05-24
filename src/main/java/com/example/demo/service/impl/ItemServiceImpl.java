@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,7 +22,9 @@ import org.springframework.util.StringUtils;
 import com.example.demo.dto.ItemDto;
 import com.example.demo.dto.SearchDto;
 import com.example.demo.entity.Author;
+import com.example.demo.entity.Book;
 import com.example.demo.entity.Category;
+import com.example.demo.entity.Comment;
 import com.example.demo.entity.Image;
 import com.example.demo.entity.Item;
 import com.example.demo.entity.Publisher;
@@ -116,6 +120,7 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public ItemDto saveOrUpdate(ItemDto dto) {
 		if (dto != null) {
 
@@ -145,7 +150,7 @@ public class ItemServiceImpl implements ItemService {
 
 			if (dto.getId() != null) {
 				entity = productRepos.getOne(dto.getId());
-				images = imageRepos.findAllByProductId(dto.getId());
+				images = imageRepos.findAllByItemId(dto.getId());
 				authors = entity.getBook().getAuthors();
 //				publishers = entity.getBook().getPublisher();
 				
@@ -239,7 +244,7 @@ public class ItemServiceImpl implements ItemService {
 					images.add(image);
 				}
 			}
-
+			entity.setBook(new Book());
 			entity.setType(dto.getType());
 			entity.setName(dto.getName());
 //			entity.setSlug(Slug.makeSlug(dto.getName()));
@@ -255,12 +260,14 @@ public class ItemServiceImpl implements ItemService {
 			}
 
 			for (int i = 0; i < images.size(); i++) {
-				images.get(i).setProduct(entity);
+				images.get(i).setItem(entity);
 			}
 			entity.getBook().setAuthors(authors);
 			entity.getBook().setPublisher(publisher);
+			entity.getBook().setItem(entity);
 
 			entity = productRepos.save(entity);
+			
 			if (author != null) {
 				author = authorRepos.save(author);
 			}
@@ -304,6 +311,89 @@ public class ItemServiceImpl implements ItemService {
 					.collect(Collectors.toList());
 		
 		return results;
+	}
+
+	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	public ItemDto insert(ItemDto dto) {
+		Item item = new Item();
+		Book book = new Book();
+		Publisher pub = new Publisher(dto.getPublisher());
+		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
+		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
+		
+		List<String> imageUrls = dto.getImages();
+		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
+		Set<String> authors = new HashSet<>();
+		if (dto.getCategoryCode().equals("sach")) {
+			authors = dto.getAuthors();
+			book.setPublisher(pub);
+			book.setNumber(dto.getNumberOfPages());
+			book.setYear(dto.getPublishingYear());
+			book.setAuthors(authors.stream().map(name -> new Author(name)).collect(Collectors.toSet()));
+			item.setBook(book);
+			
+		}
+		
+		item.setName(dto.getName());
+		item.setPrice(dto.getPrice());
+		item.setType(dto.getType());
+		item.setDescription(dto.getDescription());
+		item.setInStock(dto.getInStock());
+		item.setSubcategory(subcategory);
+		item.setCategory(category);
+		
+		Item newItem = productRepos.save(item);
+		List<Image> newImages = images.stream().map(image -> {
+			image.setItem(newItem);
+			return imageRepos.save(image);
+		}).collect(Collectors.toList());
+		newItem.setImages(newImages);
+		ItemDto result = new ItemDto(newItem);
+		return result;
+	}
+
+	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
+	public ItemDto update(ItemDto dto) {
+		Item item = productRepos.findById(dto.getId()).orElse(null);
+		if (item == null) return null;
+		
+		Book book = new Book();
+		Publisher pub = new Publisher(dto.getPublisher());
+		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
+		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
+		
+		List<String> imageUrls = dto.getImages();
+		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
+		Set<String> authors = new HashSet<>();
+		if (dto.getCategoryCode().equals("sach")) {
+			authors = dto.getAuthors();
+			book.setPublisher(pub);
+			book.setNumber(dto.getNumberOfPages());
+			book.setYear(dto.getPublishingYear());
+			book.setAuthors(authors.stream().map(name -> new Author(name)).collect(Collectors.toSet()));
+			item.setBook(book);
+			
+		}
+		
+		item.setName(dto.getName());
+		item.setPrice(dto.getPrice());
+		item.setType(dto.getType());
+		item.setDescription(dto.getDescription());
+		item.setInStock(dto.getInStock());
+		item.setSubcategory(subcategory);
+		item.setCategory(category);
+		
+		
+		Item newItem = productRepos.save(item);
+		List<Image> newImages = images.stream().map(image -> {
+			image.setItem(newItem);
+			return imageRepos.save(image);
+		}).collect(Collectors.toList());
+		newItem.setImages(newImages);
+		ItemDto result = new ItemDto(newItem);
+		return result;
 	}
 
 

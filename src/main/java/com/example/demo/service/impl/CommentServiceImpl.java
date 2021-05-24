@@ -57,7 +57,7 @@ public class CommentServiceImpl implements CommentService {
 			entity.setRating(dto.getRating());
 			entity.setDisplayName(dto.getDisplayName());
 			entity.setUser(user);
-			entity.setProduct(product);
+//			entity.setProduct(product);
 
 			entity = repos.save(entity);
 
