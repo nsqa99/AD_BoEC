@@ -26,13 +26,14 @@ import com.example.demo.service.ItemService;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/items")
-public class ItemResources {
+public class ItemResource {
 
 	@Autowired
 	private ItemService service;
 
 	@GetMapping("")
-	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
+	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(
+			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
 		Pageable pageable = PageRequest.of(page, limit);
 		List<ItemDto> result = service.findAll(pageable);
