@@ -357,9 +357,49 @@ public class ItemServiceImpl implements ItemService {
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public ItemDto update(ItemDto dto) {
-		// TODO Auto-generated method stub
-		return null;
+		Item item = productRepos.findById(dto.getId()).orElse(null);
+		if (item == null) return null;
+		
+		Book book = new Book();
+		Publisher pub = new Publisher(dto.getPublisher());
+		SubCategory subcategory = new SubCategory();
+		Category category = new Category();
+		
+		List<String> imageUrls = dto.getImages();
+		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
+		Set<String> authors = new HashSet<>();
+		if (dto.getCategoryCode().equals("sach")) {
+			authors = dto.getAuthors();
+			book.setPublisher(pub);
+			book.setNumber(dto.getNumberOfPages());
+			book.setYear(dto.getPublishingYear());
+			book.setAuthors(authors.stream().map(name -> new Author(name)).collect(Collectors.toSet()));
+			item.setBook(book);
+			
+		}
+		
+		category.setCode(dto.getCategoryCode());
+		subcategory.setCode(dto.getSubcategoryCode());
+		subcategory.setCategory(category);
+		item.setName(dto.getName());
+		item.setPrice(dto.getPrice());
+		item.setType(dto.getType());
+		item.setDescription(dto.getDescription());
+		item.setInStock(dto.getInStock());
+		item.setSubcategory(subcategory);
+		item.setCategory(category);
+		
+		
+		Item newItem = productRepos.save(item);
+		List<Image> newImages = images.stream().map(image -> {
+			image.setItem(newItem);
+			return imageRepos.save(image);
+		}).collect(Collectors.toList());
+		newItem.setImages(newImages);
+		ItemDto result = new ItemDto(newItem);
+		return result;
 	}
 
 

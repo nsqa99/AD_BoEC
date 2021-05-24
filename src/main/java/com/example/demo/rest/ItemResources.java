@@ -87,7 +87,7 @@ public class ItemResources {
 	@PutMapping("/{id}")
 	public ResponseEntity<JsonMessage<ItemDto>> update(@RequestBody ItemDto dto, @PathVariable Long id) {
 		dto.setId(id);
-		ItemDto result = service.saveOrUpdate(dto);
+		ItemDto result = service.update(dto);
 		return new ResponseEntity<JsonMessage<ItemDto>>(
 				new JsonMessage<ItemDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
 	}
