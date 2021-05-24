@@ -7,9 +7,11 @@ import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.convert.Converter;
 import com.example.demo.dto.CartDto;
 import com.example.demo.dto.OrderDto;
 import com.example.demo.dto.PaymentDto;
@@ -44,19 +46,26 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<OrderDto> findAll(Pageable pageable) {
-		return null;
+		List<OrderDto> results = 
+				ordRepo.findAll(pageable)
+					.getContent()
+					.stream()
+					.map(item -> new OrderDto(item))
+					.collect(Collectors.toList());
+		
+		return results;
 	}
 
 	@Override
-	public OrderDto getById(long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public OrderDto findById(long id) {
+		Order order = ordRepo.getOne(id);
+		return new OrderDto(order);
 	}
 
 	@Override
-	public OrderDto getByUserId(long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<OrderDto> findAllByUserId(long id, Pageable pageable) {
+		Page<Order> result = Converter.toPage(ordRepo.findAllByUserId(id), pageable);
+		return result.getContent().stream().map(data -> new OrderDto(data)).collect(Collectors.toList());
 	}
 
 	@Override
