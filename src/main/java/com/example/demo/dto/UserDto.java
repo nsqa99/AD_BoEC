@@ -1,5 +1,10 @@
 package com.example.demo.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.example.demo.entity.Address;
+import com.example.demo.entity.FullName;
 import com.example.demo.entity.User;
 
 public class UserDto extends AbstractDTO<UserDto> {
@@ -11,6 +16,7 @@ public class UserDto extends AbstractDTO<UserDto> {
 	private String city;
 	private String district;
 	private String ward;
+	private List<Integer> roleCodes = new ArrayList<>();
 
 	public UserDto() {
 		super();
@@ -18,15 +24,29 @@ public class UserDto extends AbstractDTO<UserDto> {
 
 	public UserDto(User user) {
 		super();
+		Address address = user.getAddress();
+		FullName fullname = user.getFullname();
 		this.setId(user.getId());
 		this.username = user.getUsername();
 		this.email = user.getEmail();
-		this.firstName = user.getFullname().getFirstName();
-		this.lastName = user.getFullname().getLastName();
+		if (fullname != null) {
+			this.firstName = fullname.getFirstName();
+			this.lastName = fullname.getLastName();
+		}
+		
 		this.phone = user.getPhone();
-		this.city = user.getAddress().getCity();
-		this.district = user.getAddress().getDistrict();
-		this.ward = user.getAddress().getWard();
+		if (address != null) {
+			this.city = address.getCity();
+			this.district = address.getDistrict();
+			this.ward = address.getWard();
+		}
+		if (user.getRoles() != null) {
+			user.getRoles().stream().forEach(role -> {
+				roleCodes.add(role.getId().intValue());
+			});
+		}
+		
+		
 	}
 	
 	public String getUsername() {
@@ -92,4 +112,19 @@ public class UserDto extends AbstractDTO<UserDto> {
 	public void setWard(String ward) {
 		this.ward = ward;
 	}
+
+	public List<Integer> getRoleCodes() {
+		return roleCodes;
+	}
+
+	public void setRoleCodes(List<Integer> roleCodes) {
+		this.roleCodes = roleCodes;
+	}
+
+	
+	
+
+	
+	
+	
 }
