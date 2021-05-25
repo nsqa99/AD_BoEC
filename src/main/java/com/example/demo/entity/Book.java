@@ -18,8 +18,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_book")
 public class Book extends BaseEntity {
 
-	@OneToOne
-	@JoinColumn(name = "product_id")
+	@OneToOne(mappedBy = "book")
 	private Item item;
 
 	@Column(name = "year")
@@ -29,11 +28,11 @@ public class Book extends BaseEntity {
 	private int number;
 	
 
-	@ManyToMany
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "tbl_book_author", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "author_id"))
 	private Set<Author> authors;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "publisher_id")
 	private Publisher publisher;
 
@@ -66,6 +65,8 @@ public class Book extends BaseEntity {
 	public void setYear(int year) {
 		this.year = year;
 	}
+	
+	
 
 	public int getNumber() {
 		return number;

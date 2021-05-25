@@ -14,12 +14,26 @@ public interface ItemService {
 	
 	public List<ItemDto> findAll(Pageable pageable);
 
-	public Page<ItemDto> searchByPage(SearchDto dto);
+//	public Page<ItemDto> searchByPage(SearchDto dto);
+	
+	public List<ItemDto> findAllByCategory(String match, Pageable pageable);
+	
+	public List<ItemDto> findAllBySubcategory(String match, Pageable pageable);
 
 	public ItemDto getProductById(Long id);
 
-	public ItemDto saveOrUpdate(ItemDto dto);
-
+//	public ItemDto saveOrUpdate(ItemDto dto);
+	
+	public ItemDto insert(ItemDto dto);
+	
+	public ItemDto update(ItemDto dto);
+	
 	public Boolean delete(Long id);
+
+	public long getTotal();
+	
+	public long getTotalByCategory(String category);
+	
+	public long getTotalBySubcategory(String sub);
 
 }

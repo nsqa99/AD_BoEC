@@ -16,7 +16,7 @@ public class Category extends BaseEntity {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "code")
+	@Column(name = "code", unique = true)
 	private String code;
 
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)

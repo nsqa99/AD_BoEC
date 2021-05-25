@@ -59,13 +59,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 
 //		.and()
 		.authorizeRequests()
-		.antMatchers("/api/auth/**")
+		.antMatchers("/api/auth/**", "/api/items", "/api/category", "/api/category/**/subcategory", "/api/subcategory")
 		.permitAll()
-		.antMatchers("/api/**")
-		.permitAll()
-
-		.antMatchers("/api/news/**")
-		.permitAll()
+//		.antMatchers("/api/**")
+//		.permitAll()
+//		.antMatchers("/api/news/**")
+//		.permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.exceptionHandling()

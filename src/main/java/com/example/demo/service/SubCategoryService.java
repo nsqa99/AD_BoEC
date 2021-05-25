@@ -16,4 +16,6 @@ public interface SubCategoryService {
 	public SubCategoryDto saveOrUpdate(SubCategoryDto dto);
 
 	public Boolean deleteSubCategory(Long id);
+	
+	public long getTotal();
 }

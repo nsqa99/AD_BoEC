@@ -43,10 +43,17 @@ public class User extends BaseEntity {
 
 	@OneToMany(mappedBy = "user")
 	private List<Comment> comments;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Order> orders;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Cart> carts;
 
 	public User() {
 	}
 
+	
 	public User(String phone, String email, String username, String password, FullName fullname, Address address) {
 		super();
 		this.phone = phone;
@@ -56,6 +63,30 @@ public class User extends BaseEntity {
 		this.fullname = fullname;
 		this.address = address;
 	}
+	
+	
+
+
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
+
+	public List<Cart> getCarts() {
+		return carts;
+	}
+
+
+	public void setCarts(List<Cart> carts) {
+		this.carts = carts;
+	}
+
 
 	public String getPhone() {
 		return phone;
@@ -120,5 +151,6 @@ public class User extends BaseEntity {
 	public void setComments(List<Comment> comments) {
 		this.comments = comments;
 	}
+	
 
 }

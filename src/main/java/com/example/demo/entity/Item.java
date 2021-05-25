@@ -1,14 +1,13 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -36,7 +35,11 @@ public class Item extends BaseEntity {
 	
 	@Column(name = "in_stock")
 	private int inStock;
-
+	
+	
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+	private List<ItemCart> itemCarts;
+	
 //	@Column(name = "publishing_year")
 //	private Integer publishingYear; // 1
 
@@ -58,18 +61,19 @@ public class Item extends BaseEntity {
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private ProductStock stock = new ProductStock();
 
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-	private List<Image> images; // 1, 2, 3
+	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+	private List<Image> images = new ArrayList<>(); // 1, 2, 3
 
-	@OneToMany(mappedBy = "product")
-	private List<Comment> comments;
+//	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+//	private List<Comment> comments;
 
 
 
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //	private Clothes clothes;
 
-	@OneToOne(mappedBy = "item", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "book_id")
 	private Book book;
 
 //	@OneToOne(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -114,6 +118,8 @@ public class Item extends BaseEntity {
 //	public void setSlug(String slug) {
 //		this.slug = slug;
 //	}
+
+
 
 	public Book getBook() {
 		return book;
@@ -207,12 +213,26 @@ public class Item extends BaseEntity {
 //		this.publisher = publisher;
 //	}
 
-	public List<Comment> getComments() {
-		return comments;
+//	public List<Comment> getComments() {
+//		return comments;
+//	}
+//
+//	public void setComments(List<Comment> comments) {
+//		this.comments = comments;
+//	}
+
+
+
+	public List<ItemCart> getItemCarts() {
+		return itemCarts;
 	}
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+
+
+	public void setItemCarts(List<ItemCart> itemCarts) {
+		this.itemCarts = itemCarts;
 	}
+	
+	
 
 }

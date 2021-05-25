@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.demo.entity.Author;
 import com.example.demo.entity.Image;
 import com.example.demo.entity.Item;
@@ -59,10 +61,13 @@ public class ItemDto extends AbstractDTO<ItemDto> {
 		this.subcategoryCode = entity.getSubcategory().getCode();
 		this.inStock = entity.getInStock();
 		images = new ArrayList<>();
-		for (Image image : entity.getImages()) {
-			ImageDto dto = new ImageDto(image);
-			images.add(dto.getUrl());
+		if (entity.getImages() != null) {
+			for (Image image : entity.getImages()) {
+				ImageDto dto = new ImageDto(image);
+				images.add(dto.getUrl());
+			}
 		}
+		
 
 		if (this.categoryCode.equalsIgnoreCase("sach")) {
 			this.publishingYear = entity.getBook().getYear();
