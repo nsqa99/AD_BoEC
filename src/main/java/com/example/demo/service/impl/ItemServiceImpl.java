@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.example.demo.convert.Converter;
 import com.example.demo.dto.ItemDto;
 import com.example.demo.dto.SearchDto;
 import com.example.demo.entity.Author;
@@ -128,7 +129,7 @@ public class ItemServiceImpl implements ItemService {
 			Set<Author> authors = new HashSet<>();
 
 			String publisherName = dto.getPublisher();
-			
+
 			String categoryCode = dto.getCategoryCode();
 			int inStock = dto.getInStock();
 
@@ -139,8 +140,7 @@ public class ItemServiceImpl implements ItemService {
 			Author author = null;
 			Publisher publisher = null;
 			Image image = null;
-			
-			
+
 			if (categoryCode.equalsIgnoreCase("sach")) {
 				publisher = publisherRepos.findByName(publisherName);
 			}
@@ -153,14 +153,14 @@ public class ItemServiceImpl implements ItemService {
 				images = imageRepos.findAllByItemId(dto.getId());
 				authors = entity.getBook().getAuthors();
 //				publishers = entity.getBook().getPublisher();
-				
 
 				for (Author authorTmp : authors) {
 					author = authorTmp;
 				}
 
 				if (dto.getCategoryCode().equalsIgnoreCase("sach")) {
-					if (publisher == null) publisherRepos.save(new Publisher(publisherName));
+					if (publisher == null)
+						publisherRepos.save(new Publisher(publisherName));
 					for (String authorName : authorNames) {
 						author = authorRepos.findByName(authorName);
 						if (author != null) {
@@ -267,7 +267,7 @@ public class ItemServiceImpl implements ItemService {
 			entity.getBook().setItem(entity);
 
 			entity = productRepos.save(entity);
-			
+
 			if (author != null) {
 				author = authorRepos.save(author);
 			}
@@ -303,13 +303,9 @@ public class ItemServiceImpl implements ItemService {
 	@Override
 	public List<ItemDto> findAll(Pageable pageable) {
 		// TODO Auto-generated method stub
-		List<ItemDto> results = 
-				productRepos.findAll(pageable)
-					.getContent()
-					.stream()
-					.map(item -> new ItemDto(item))
-					.collect(Collectors.toList());
-		
+		List<ItemDto> results = productRepos.findAll(pageable).getContent().stream().map(item -> new ItemDto(item))
+				.collect(Collectors.toList());
+
 		return results;
 	}
 
@@ -321,7 +317,7 @@ public class ItemServiceImpl implements ItemService {
 		Publisher pub = new Publisher(dto.getPublisher());
 		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
 		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
-		
+
 		List<String> imageUrls = dto.getImages();
 		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
 		Set<String> authors = new HashSet<>();
@@ -332,9 +328,9 @@ public class ItemServiceImpl implements ItemService {
 			book.setYear(dto.getPublishingYear());
 			book.setAuthors(authors.stream().map(name -> new Author(name)).collect(Collectors.toSet()));
 			item.setBook(book);
-			
+
 		}
-		
+
 		item.setName(dto.getName());
 		item.setPrice(dto.getPrice());
 		item.setType(dto.getType());
@@ -342,7 +338,7 @@ public class ItemServiceImpl implements ItemService {
 		item.setInStock(dto.getInStock());
 		item.setSubcategory(subcategory);
 		item.setCategory(category);
-		
+
 		Item newItem = productRepos.save(item);
 		List<Image> newImages = images.stream().map(image -> {
 			image.setItem(newItem);
@@ -357,13 +353,14 @@ public class ItemServiceImpl implements ItemService {
 	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public ItemDto update(ItemDto dto) {
 		Item item = productRepos.findById(dto.getId()).orElse(null);
-		if (item == null) return null;
-		
+		if (item == null)
+			return null;
+
 		Book book = new Book();
 		Publisher pub = new Publisher(dto.getPublisher());
 		SubCategory subcategory = subcategoryRepos.findOneByCode(dto.getSubcategoryCode());
 		Category category = categoryRepos.findOneByCode(dto.getCategoryCode());
-		
+
 		List<String> imageUrls = dto.getImages();
 		List<Image> images = imageUrls.stream().map(image -> new Image(image)).collect(Collectors.toList());
 		Set<String> authors = new HashSet<>();
@@ -374,9 +371,9 @@ public class ItemServiceImpl implements ItemService {
 			book.setYear(dto.getPublishingYear());
 			book.setAuthors(authors.stream().map(name -> new Author(name)).collect(Collectors.toSet()));
 			item.setBook(book);
-			
+
 		}
-		
+
 		item.setName(dto.getName());
 		item.setPrice(dto.getPrice());
 		item.setType(dto.getType());
@@ -384,8 +381,7 @@ public class ItemServiceImpl implements ItemService {
 		item.setInStock(dto.getInStock());
 		item.setSubcategory(subcategory);
 		item.setCategory(category);
-		
-		
+
 		Item newItem = productRepos.save(item);
 		List<Image> newImages = images.stream().map(image -> {
 			image.setItem(newItem);
@@ -401,5 +397,34 @@ public class ItemServiceImpl implements ItemService {
 		return productRepos.count();
 	}
 
+	@Override
+	public List<ItemDto> findAllByCategory(String match, Pageable pageable) {
+		List<ItemDto> results = 
+				Converter.toPage(productRepos.findAllByCategory(match), pageable)
+				.getContent()
+				.stream().map(item -> new ItemDto(item)).collect(Collectors.toList());
+
+		return results;
+	}
+
+	@Override
+	public List<ItemDto> findAllBySubcategory(String match, Pageable pageable) {
+		List<ItemDto> results = 
+				Converter.toPage(productRepos.findAllBySubcategory(match), pageable)
+				.getContent()
+				.stream().map(item -> new ItemDto(item)).collect(Collectors.toList());
+
+		return results;
+	}
+
+	@Override
+	public long getTotalByCategory(String cate) {
+		return productRepos.getToTalByCategory(cate);
+	}
+
+	@Override
+	public long getTotalBySubcategory(String sub) {
+		return productRepos.getToTalBySubcategory(sub);
+	}
 
 }
