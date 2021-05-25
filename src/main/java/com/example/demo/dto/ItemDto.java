@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.demo.entity.Author;
 import com.example.demo.entity.Image;
 import com.example.demo.entity.Item;

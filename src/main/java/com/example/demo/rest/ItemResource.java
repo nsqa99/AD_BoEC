@@ -1,6 +1,10 @@
 package com.example.demo.rest;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import com.example.demo.common.CloudinaryUtils;
 import com.example.demo.common.Constants;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.common.JsonMessage;
 import com.example.demo.dto.ItemDto;
@@ -32,6 +38,7 @@ public class ItemResource {
 
 	@Autowired
 	private ItemService service;
+	
 
 	@GetMapping("")
 	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(
@@ -107,11 +114,37 @@ public class ItemResource {
 				new JsonMessage<ItemDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
 	}
 
-	@PutMapping("/{id}")
+	@PostMapping("/{id}")
 	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STAFF_SALE')")
-	public ResponseEntity<JsonMessage<ItemDto>> update(@RequestBody ItemDto dto, @PathVariable Long id) {
+	public ResponseEntity<JsonMessage<ItemDto>> update(
+			@RequestBody ItemDto dto, 
+			@PathVariable Long id) {
 		dto.setId(id);
 		ItemDto result = service.update(dto);
+		return new ResponseEntity<JsonMessage<ItemDto>>(
+				new JsonMessage<ItemDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
+	}
+	
+	@PostMapping("/{id}/images")
+	public ResponseEntity<JsonMessage<ItemDto>> upsertItemImage(
+			@RequestParam("images") MultipartFile[] images,
+			@PathVariable Long id) {
+		List<String> urls = new ArrayList<String>();
+		if (images != null && images.length > 0) {
+			for (MultipartFile image : images) {
+				try {
+					String url = CloudinaryUtils.uploadImage(image);
+					urls.add(url);
+				} catch (IOException e) {
+					return new ResponseEntity<JsonMessage<ItemDto>>(
+							new JsonMessage<ItemDto>(Constants.StatusCode.BAD_REQUEST.getValue()), HttpStatus.OK);
+				}
+			}
+		}
+		ItemDto item = service.getProductById(id);
+		if (urls.size() > 0) item.setImages(urls);
+		ItemDto result = service.update(item);
+		
 		return new ResponseEntity<JsonMessage<ItemDto>>(
 				new JsonMessage<ItemDto>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
 	}
