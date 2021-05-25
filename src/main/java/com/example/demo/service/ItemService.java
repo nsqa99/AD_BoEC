@@ -14,7 +14,7 @@ public interface ItemService {
 	
 	public List<ItemDto> findAll(Pageable pageable);
 
-	public Page<ItemDto> searchByPage(SearchDto dto);
+//	public Page<ItemDto> searchByPage(SearchDto dto);
 	
 	public List<ItemDto> findAllByCategory(String match, Pageable pageable);
 	
@@ -22,7 +22,7 @@ public interface ItemService {
 
 	public ItemDto getProductById(Long id);
 
-	public ItemDto saveOrUpdate(ItemDto dto);
+//	public ItemDto saveOrUpdate(ItemDto dto);
 	
 	public ItemDto insert(ItemDto dto);
 	

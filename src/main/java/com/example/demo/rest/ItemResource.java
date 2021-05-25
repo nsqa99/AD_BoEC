@@ -100,7 +100,7 @@ public class ItemResource {
 	}
 
 	@PostMapping("")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STAFF_STOCK')")
 	public ResponseEntity<JsonMessage<ItemDto>> create(@RequestBody ItemDto dto) {
 		ItemDto result = service.insert(dto);
 		return new ResponseEntity<JsonMessage<ItemDto>>(
@@ -108,7 +108,7 @@ public class ItemResource {
 	}
 
 	@PutMapping("/{id}")
-	@PreAuthorize("hasRole('ROLE_ADMIN')")
+	@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STAFF_SALE')")
 	public ResponseEntity<JsonMessage<ItemDto>> update(@RequestBody ItemDto dto, @PathVariable Long id) {
 		dto.setId(id);
 		ItemDto result = service.update(dto);
