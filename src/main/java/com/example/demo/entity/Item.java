@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -35,6 +36,7 @@ public class Item extends BaseEntity {
 	@Column(name = "in_stock")
 	private int inStock;
 	
+	
 	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
 	private List<ItemCart> itemCarts;
 	
@@ -60,7 +62,7 @@ public class Item extends BaseEntity {
 //	private ProductStock stock = new ProductStock();
 
 	@OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
-	private List<Image> images; // 1, 2, 3
+	private List<Image> images = new ArrayList<>(); // 1, 2, 3
 
 //	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
 //	private List<Comment> comments;
