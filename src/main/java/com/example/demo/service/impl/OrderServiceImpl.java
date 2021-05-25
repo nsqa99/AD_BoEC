@@ -144,4 +144,14 @@ public class OrderServiceImpl implements OrderService {
 
 	}
 
+	@Override
+	public long getTotal() {
+		return ordRepo.count();
+	}
+
+	@Override
+	public long getTotalWithUserId(long id) {
+		return ordRepo.getToTalWithUserId(id);
+	}
+
 }

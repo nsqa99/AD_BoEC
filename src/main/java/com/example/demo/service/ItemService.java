@@ -26,4 +26,6 @@ public interface ItemService {
 
 	public Boolean delete(Long id);
 
+	public long getTotal();
+
 }

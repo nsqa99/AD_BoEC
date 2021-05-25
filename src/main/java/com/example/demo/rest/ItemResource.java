@@ -6,6 +6,7 @@ import com.example.demo.common.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,13 +34,16 @@ public class ItemResource {
 	private ItemService service;
 
 	@GetMapping("")
-	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(
-			@RequestParam(name = "page", defaultValue = "0") int page,
+	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("X-Total-Count", String.valueOf(service.getTotal()));
+		responseHeaders.add("X-Page-Number", String.valueOf(page));
+		responseHeaders.add("X-Page-Size", String.valueOf(limit));
 		Pageable pageable = PageRequest.of(page, limit);
 		List<ItemDto> result = service.findAll(pageable);
 		return new ResponseEntity<JsonMessage<List<ItemDto>>>(
-				new JsonMessage<List<ItemDto>>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
+				new JsonMessage<List<ItemDto>>(Constants.StatusCode.OK.getValue(), result), responseHeaders, HttpStatus.OK);
 	}
 
 //	@GetMapping(value = "/search")
