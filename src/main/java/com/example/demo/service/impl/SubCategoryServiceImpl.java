@@ -3,6 +3,9 @@ package com.example.demo.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.transaction.Transactional;
+import javax.transaction.Transactional.TxType;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +50,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 	}
 
 	@Override
+	@Transactional(value = TxType.REQUIRES_NEW, rollbackOn = Exception.class)
 	public SubCategoryDto saveOrUpdate(SubCategoryDto dto) {
 		
 		Category category = categoryRepository.findOneByCode(dto.getCategoryCode());
@@ -80,6 +84,11 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public long getTotal() {
+		return repos.count();
 	}
 
 }
