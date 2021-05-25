@@ -27,7 +27,7 @@ public interface ItemService {
 	public ItemDto insert(ItemDto dto);
 	
 	public ItemDto update(ItemDto dto);
-
+	
 	public Boolean delete(Long id);
 
 	public long getTotal();
