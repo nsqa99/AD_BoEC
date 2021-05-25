@@ -23,9 +23,7 @@ import com.example.demo.common.Constants;
 import com.example.demo.common.JsonMessage;
 import com.example.demo.dto.OrderDto;
 import com.example.demo.dto.UserDto;
-import com.example.demo.entity.Address;
-import com.example.demo.entity.FullName;
-import com.example.demo.entity.User;
+import com.example.demo.service.OrderService;
 import com.example.demo.service.UserService;
 
 @CrossOrigin(origins = "*")
@@ -36,15 +34,22 @@ public class UserResource {
 	@Autowired
 	private UserService service;
 	
+	@Autowired
+	private OrderService ordService;
+	
 	@GetMapping("/{id}/orders")
 	public ResponseEntity<JsonMessage<List<OrderDto>>> findAllOrders(
 			@PathVariable(name = "id", required = true) long id, 
 			@RequestParam(name = "page", defaultValue = "0") int page,
 			@RequestParam(name = "limit", defaultValue = "10") int limit) {
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("X-Total-Count", String.valueOf(ordService.getTotalWithUserId(id)));
+		responseHeaders.add("X-Page-Number", String.valueOf(page));
+		responseHeaders.add("X-Page-Size", String.valueOf(limit));
 		Pageable pageable = PageRequest.of(page, limit);
 		List<OrderDto> result = service.getOrdersByUserId(id, pageable);
 		return new ResponseEntity<JsonMessage<List<OrderDto>>>(
-				new JsonMessage<List<OrderDto>>(Constants.StatusCode.OK.getValue(), result), HttpStatus.OK);
+				new JsonMessage<List<OrderDto>>(Constants.StatusCode.OK.getValue(), result), responseHeaders, HttpStatus.OK);
 	}
 	
 	@GetMapping("")

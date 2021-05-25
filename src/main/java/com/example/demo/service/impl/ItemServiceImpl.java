@@ -396,5 +396,10 @@ public class ItemServiceImpl implements ItemService {
 		return result;
 	}
 
+	@Override
+	public long getTotal() {
+		return productRepos.count();
+	}
+
 
 }

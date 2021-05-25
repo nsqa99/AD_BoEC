@@ -15,4 +15,6 @@ public interface OrderService {
 	public OrderDto insert(OrderDto order) throws Exception;
 	public OrderDto update(long id);
 	public void delete(long id);
+	public long getTotal();
+	public long getTotalWithUserId(long id);
 }
