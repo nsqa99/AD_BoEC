@@ -21,7 +21,7 @@ import com.example.demo.service.SubCategoryService;
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping(value = "/api/subcategory")
-public class RestSubCategoryController {
+public class SubCategoryResource {
 
 	@Autowired
 	private SubCategoryService service;
