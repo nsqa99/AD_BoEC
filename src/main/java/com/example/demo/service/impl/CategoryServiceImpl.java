@@ -1,9 +1,10 @@
 package com.example.demo.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.CategoryDto;
@@ -21,20 +22,11 @@ public class CategoryServiceImpl implements CategoryService {
 //	private SubCategoryRepository subRepos;
 
 	@Override
-	public List<CategoryDto> getAllCategoryWithSub() {
-
-		List<CategoryDto> list = new ArrayList<>();
-
-//		List<SubCategory> listSub = new ArrayList<>();
-
-		List<Category> entities = repos.findAll();
-		for (Category entity : entities) {
-//			SubCategory subDto = subRepos.findOneByCode(entity.getCode());
-//			listSub.add(subDto);
-			CategoryDto dto = new CategoryDto(entity);
-			list.add(dto);
-		}
-		return list;
+	public List<CategoryDto> findAll(Pageable pageable) {
+		return repos.findAll()
+				.stream()
+				.map(c -> new CategoryDto(c))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -72,6 +64,23 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<CategoryDto> getAllCategory(String categoryCode) {
 		return null;
+	}
+
+	@Override
+	public CategoryDto getById(long id) {
+		Category cate = repos.findById(id).orElse(null);
+		if (cate != null) return new CategoryDto(cate);
+		return null;
+	}
+
+	@Override
+	public long getTotal() {
+		return repos.count();
+	}
+
+	@Override
+	public long getTotalSubCate(long id) {
+		return repos.countSubCategory(id);
 	}
 
 }
