@@ -34,14 +34,30 @@ public class ItemResource {
 	private ItemService service;
 
 	@GetMapping("")
-	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(@RequestParam(name = "page", defaultValue = "0") int page,
-			@RequestParam(name = "limit", defaultValue = "10") int limit) {
-		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("X-Total-Count", String.valueOf(service.getTotal()));
-		responseHeaders.add("X-Page-Number", String.valueOf(page));
-		responseHeaders.add("X-Page-Size", String.valueOf(limit));
+	public ResponseEntity<JsonMessage<List<ItemDto>>> findAll(
+			@RequestParam(name = "page", defaultValue = "0") int page,
+			@RequestParam(name = "limit", defaultValue = "10") int limit,
+			@RequestParam(name = "category", required = false) String category,
+			@RequestParam(name = "subcategory", required = false) String subcategory) {
+		long total = service.getTotal();
 		Pageable pageable = PageRequest.of(page, limit);
 		List<ItemDto> result = service.findAll(pageable);
+		if (category != null && !category.isEmpty() && !category.isBlank()) {
+			total = service.getTotalByCategory(category);
+			result = service.findAllByCategory(category, pageable);
+		}
+		
+		if (subcategory != null && !subcategory.isEmpty() && !subcategory.isBlank()) {
+			total = service.getTotalBySubcategory(subcategory);
+			result = service.findAllBySubcategory(subcategory, pageable);
+		}
+		
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.add("X-Total-Count", String.valueOf(total));
+		responseHeaders.add("X-Page-Number", String.valueOf(page));
+		responseHeaders.add("X-Page-Size", String.valueOf(limit));
+		
+		
 		return new ResponseEntity<JsonMessage<List<ItemDto>>>(
 				new JsonMessage<List<ItemDto>>(Constants.StatusCode.OK.getValue(), result), responseHeaders, HttpStatus.OK);
 	}
