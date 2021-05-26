@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.demo.service.impl.UserDetailsServiceImpl;
@@ -32,6 +33,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	@Bean
 	public AuthTokenFilter authenciationJwtTokenFilter() {
 		return new AuthTokenFilter();
+	}
+	
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		// TODO Auto-generated method stub
+		registry.addMapping("/api/**").allowedOrigins("http://localhost:8080");
 	}
 
 	@Override
